@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.0</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>spring-boot-complete</artifactId>
@@ -23,7 +24,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-logging</artifactId>
+    </dependency>
 		<!-- tag::actuator[] -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -46,7 +50,68 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.12.1</version>
+				<configuration>
+					<fork>true</fork>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.3.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>com.example.springboot.Application</mainClass>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>native</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.graalvm.buildtools</groupId>
+						<artifactId>native-maven-plugin</artifactId>
+						<version>0.10.3</version>
+						<extensions>true</extensions>
+						<executions>
+							<execution>
+								<id>build-native</id>
+								<goals>
+									<goal>compile-no-fork</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+							<execution>
+								<id>test-native</id>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<phase>test</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<buildArgs>
+								<buildArg>
+									-J-javaagent:${project.basedir}/dd-java-agent.jar</buildArg>
+								<buildArg>-J-Ddd.profiling.enabled=true</buildArg>
+								<buildArg>-J-Ddd.logs.injection=true</buildArg>
+							</buildArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
