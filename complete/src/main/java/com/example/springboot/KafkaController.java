@@ -15,7 +15,7 @@ public class KafkaController {
 
 	@PostMapping(path = "/send/foo/{what}")
 	public void sendFoo(@PathVariable String what) {
-		this.template.send("topic1", "test");
+		this.template.send("topic1", what);
 	}
 
 }

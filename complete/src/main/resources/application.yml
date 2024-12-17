@@ -6,3 +6,22 @@ spring:
     consumer:
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
       group-id: "consumer"
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql:
+      true
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydatabase
+    username: myuser
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
+jakarta:
+  persistence:
+    jdbc:
+      url: jdbc:mysql://localhost:3306/mydatabase
+
+# hibernate:
+#   dialect: org.hibernate.dialect.MySQLDialect
