@@ -117,7 +117,7 @@
 							<buildArgs>
 								<buildArg>
 									-J-javaagent:${project.basedir}/dd-java-agent.jar</buildArg>
-								<buildArg>-J-Ddd.profiling.enabled=true</buildArg>
+								<buildArg>-J-Ddd.profiling.enabled=true --enable-monitoring=jfr</buildArg>
 								<buildArg>-J-Ddd.logs.injection=true</buildArg>
 							</buildArgs>
 						</configuration>
