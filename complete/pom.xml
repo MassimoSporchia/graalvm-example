@@ -15,8 +15,80 @@
 	<name>spring-boot-complete</name>
 	<description>Demo project for Spring Boot</description>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring.boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.9.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers-bom</artifactId>
+				<version>${testcontainers.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<properties>
+		<maven.compiler.release>17</maven.compiler.release>
+		<springdoc-openapi-starter-webmvc-ui.version>2.1.0</springdoc-openapi-starter-webmvc-ui.version>
+		<revision>0-SNAPSHOT</revision>
+		<dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
 		<java.version>17</java.version>
+		<springAot.enabled>false</springAot.enabled>
+		<spring-cloud.version>2022.0.4</spring-cloud.version>
+		<spring.boot.version>3.3.0</spring.boot.version>
+		<compiler.plugin.version>3.8.0</compiler.plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<jar-plugin.version>2.6</jar-plugin.version>
+		<clean.plugin.version>3.1.0</clean.plugin.version>
+
+		<native-maven-plugin.version>0.9.25</native-maven-plugin.version>
+		<native-maven-plugin.requiredVersion>22.3</native-maven-plugin.requiredVersion>
+
+		<hibernate-enhance-maven-plugin.version>6.1.7.Final</hibernate-enhance-maven-plugin.version>
+		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<org.projectlombok.version>1.18.28</org.projectlombok.version>
+		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+		<maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>3.1.0</maven-surefire-plugin.version>
+		<maven-scm-plugin.version>2.0.0</maven-scm-plugin.version>
+		<flatten-maven-plugin.version>1.5.0</flatten-maven-plugin.version>
+
+		<junit.version>4.13.2</junit.version>
+		<testcontainers.version>1.17.2</testcontainers.version>
+		<mock-server.version>5.15.0</mock-server.version>
+
+		<spring.config.import>optional</spring.config.import>
+		<m2e.apt.activation>jdt_apt</m2e.apt.activation>
+		<spring-boot-admin.version>2.1.5</spring-boot-admin.version>
+		<testcontainers.version>1.17.2</testcontainers.version>
+		<apache-commons-collections.version>4.3</apache-commons-collections.version>
+		<junit.version>4.13.2</junit.version>
+		<tams-commons.version>0.8.1.Spring-Boot-3.0.9</tams-commons.version>
+		<tams-integration-api.version>2.13.0.Spring-Boot-3.0.9</tams-integration-api.version>
+
+		<jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -24,11 +96,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		
 		<dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-logging</artifactId>
-    </dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc-openapi-starter-webmvc-ui.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -37,6 +114,19 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
 		</dependency>
 
 		<dependency>
@@ -53,6 +143,189 @@
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-reactor-netty</artifactId>
+		</dependency>
+
+		<!-- this causes the native build to fail -->
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson</artifactId>
+			<version>3.44.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>9.4.0.jre16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-reactor-netty</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.zalando</groupId>
+			<artifactId>logbook-spring-boot-starter</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>27.0.1-jre</version>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-brave</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.zipkin.reporter2</groupId>
+			<artifactId>zipkin-reporter-brave</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.zipkin.reporter2</groupId>
+			<artifactId>zipkin-sender-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cronutils</groupId>
+			<artifactId>cron-utils</artifactId>
+			<version>9.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>it.ozimov</groupId>
+			<artifactId>embedded-redis</artifactId>
+			<version>0.7.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>${apache-commons-collections.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.3.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.12.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+			<version>5.12.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<version>4.11.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.agent</artifactId>
+			<version>${jacoco-maven-plugin.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.javacrumbs.shedlock</groupId>
+			<artifactId>shedlock-spring</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.javacrumbs.shedlock</groupId>
+			<artifactId>shedlock-provider-jdbc-template</artifactId>
+			<version>5.3.0</version>
 		</dependency>
 
 	</dependencies>
@@ -84,6 +357,39 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.graalvm.buildtools</groupId>
+				<artifactId>native-maven-plugin</artifactId>
+				<version>0.10.3</version>
+				<configuration>
+					<buildArgs>
+						<arg>-H:+AddAllCharsets</arg>
+						<arg>-H:Log=registerResource</arg>
+						<!-- <arg>-H:ResourceConfigurationResources=resource-config.json</arg>
+						<arg>-H:ReflectionConfigurationResources=reflect-config.json</arg>
+						<arg>-H:DynamicProxyConfigurationResources=proxy-config.json</arg>
+                        <arg>-H:SerializationConfigurationResources=serialization-config.json</arg>
+                        <arg>-H:JNIConfigurationResources=jni-config.json</arg> -->
+						<arg>-H:-CheckToolchain</arg>
+						<arg>-H:TempDirectory=${env.TMPDIR}</arg>
+						<arg>--initialize-at-run-time=sun.net.dns.ResolverConfigurationImpl</arg>
+						<arg>-march=compatibility</arg>
+					</buildArgs>
+					<imageName>${executable-name}</imageName>
+					<metadataRepository>
+						<enabled>true</enabled>
+					</metadataRepository>
+					<requiredVersion>${native-maven-plugin.requiredVersion}</requiredVersion>
+				</configuration>
+				<executions>
+					<execution>
+						<id>add-reachability-metadata</id>
+						<goals>
+							<goal>add-reachability-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -112,13 +418,24 @@
 								</goals>
 								<phase>test</phase>
 							</execution>
+							<execution>
+								<id>add-reachability-metadata</id>
+								<goals>
+									<goal>add-reachability-metadata</goal>
+								</goals>
+							</execution>
 						</executions>
 						<configuration>
+							<verbose>true</verbose>
+							<debug>true</debug>
+
 							<buildArgs>
 								<buildArg>
-									-J-javaagent:${project.basedir}/dd-java-agent.jar</buildArg>
+									-J-javaagent:${project.basedir}/standard_dd-java-agent.jar</buildArg>
 								<buildArg>-J-Ddd.profiling.enabled=true --enable-monitoring=jfr</buildArg>
 								<buildArg>-J-Ddd.logs.injection=true</buildArg>
+								<buildArg>-Ddd.integration.reactive-streams.enabled=false</buildArg>
+								<buildArg>-Ddd.integration.reactor-core.enabled=false</buildArg>
 							</buildArgs>
 						</configuration>
 					</plugin>

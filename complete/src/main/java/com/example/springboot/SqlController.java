@@ -36,7 +36,8 @@ public class SqlController {
 	@GetMapping(path="/all")
 	public @ResponseBody Iterable<User> getAllUsers() {
 		// This returns a JSON or XML with the users
-		logger.info("Returning all users");
+		logger.info("Returning all users - 1");
+        userRepository.findAll();
 		return userRepository.findAll();
 	}
 }
